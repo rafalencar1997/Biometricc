@@ -30,20 +30,19 @@
 #define BLYNK_USE_DIRECT_CONNECT
 
 #define LED_INSIDE 2
-//#define SENSOR_ECHO 35
-//#define SENSOR_TRIG 34
 
+#include <WiFi.h>
+#include <WiFiClient.h>
+#include <WiFiUdp.h>
 #include <BlynkSimpleEsp32_BLE.h>
 #include <BLEDevice.h>
 #include <BLEServer.h>
 
-#include <HCSR04.h>
+//#include <HCSR04.h>
 
 // You should get Auth Token in the Blynk App.
 // Go to the Project Settings (nut icon).
 char auth[] = "ZAzXQpO9XMwdB4tUMgWGusw7kNIISFTp";
-
-HCSR04 hc (34,35);
 
 void setup()
 {
@@ -57,18 +56,20 @@ void setup()
   
   Blynk.begin(auth);
   
-//  pinMode(SENSOR_ECHO, INPUT); //DEFINE O PINO COMO ENTRADA (RECEBE)
-//  pinMode(SENSOR_TRIG, OUTPUT); //DEFINE O PINO COMO SAÍDA (ENVIA)
   pinMode(LED_INSIDE, OUTPUT);            
   digitalWrite(LED_INSIDE, HIGH);
 }
+
+BLYNK_WRITE(V10) {
+  Serial.println(param.asStr());
+}
+
 
 void loop()
 {
   Blynk.run();
   delay(5000);
-  double distancia = hc.dist();
-  Serial.print("Distância: ");
-  Serial.println(distancia);
-  Blynk.virtualWrite(V21, distancia);
+  Blynk.virtualWrite(V21, 24);
+  delay(5000);
+  Blynk.virtualWrite(V21, 12);
 }
