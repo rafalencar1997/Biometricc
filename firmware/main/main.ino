@@ -14,8 +14,6 @@
   Pranav Cherukupalli <cherukupallip@gmail.com>
 */
 
-
-//---------------------------------- VARIABILI PER IL CONTROLLO DELLA CONNESSIONE ATTIVA ---------------------------------
 unsigned long previousMillisWiFi = 0; // Memorizza l'ultimo volta che l'evento è stato aggiornato
 long intervalWiFi = 6000; // Variabile per l'intervallo di tempo tra un tentativo di connessione e l'altro.
 
@@ -115,25 +113,18 @@ void setup() {
   Serial.print("Connessione all'ultimo AP");
 
   while (WiFi.status() != WL_CONNECTED) {
-    if (previousMillisWiFi < intervalWiFi)
-    {
+    if (previousMillisWiFi < intervalWiFi){
       previousMillisWiFi = millis();
       Serial.print(".");
-
-
       delay(500);
     }
     else break;
-
   }
 
   if (WiFi.status() != WL_CONNECTED) {
-
     WiFi.onEvent(WiFiEvent);
     WiFi.mode(WIFI_MODE_STA);
-
     Serial.println("Starting WPS");
-
     wpsInitConfig();
     esp_wifi_wps_enable(&config);
     esp_wifi_wps_start(0);
@@ -145,14 +136,13 @@ void setup() {
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
     
-//    Blynk.begin(auth);
     Blynk.config(auth);
     bool success = Blynk.connect();
     if(!success){
         Serial.println("Connection failed");
         return;
     }
-    Serial.println("Connection succesful.");
+    Serial.println("Connection succeded");
   }
 }
 
