@@ -7,22 +7,18 @@
 //D5      |d14   |17, 
 //D6      |d12   |18, 
 //D7      |d13   |20;
-const int RS = 24, EN = 22, D4 = 16, D5 = 17, D6 = 18, D7 = 20;
-
-LiquidCrystal lcd(RS, EN, D4, D5, D6, D7);
+//const int RS = 24, EN = 22, D4 = 16, D5 = 17, D6 = 18, D7 = 20;
+//
+//LiquidCrystal lcd(RS, EN, D4, D5, D6, D7);
+LiquidCrystal lcd(12, 11, 2, 3, 4, 5);
 
 void setup() {
   // set up the LCD's number of columns and rows:
-  pinMode(2, OUTPUT);
   lcd.begin(16, 2);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Biometricc :D");
 }
 
 void loop() {
-  lcd.setCursor(0, 1);
-  lcd.print("hello, world!");
-  digitalWrite(2, HIGH);
-  delay(5000);
-  lcd.print("batata!");
-  digitalWrite(2, LOW);
-  delay(5000);
 }
