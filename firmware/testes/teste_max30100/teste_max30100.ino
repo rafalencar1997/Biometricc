@@ -21,100 +21,68 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // any of the tests running fail
 
 #include <Wire.h>
-#include "MAX30100.h"
+#include "MAX30100_PulseOximeter.h"
 
-MAX30100 sensor;
+#define REPORTING_PERIOD_MS     1000
+
+// PulseOximeter is the higher level interface to the sensor
+// it offers:
+//  * beat detection reporting
+//  * heart rate calculation
+//  * SpO2 (oxidation level) calculation
+PulseOximeter pox;
+float BPM, SpO2;
+uint32_t tsLastReport = 0;
+
+// Callback (registered below) fired when a pulse is detected
+void onBeatDetected(){
+    Serial.println("Beat Detected!");
+}
 
 void setup()
 {
     Serial.begin(115200);
 
-    Serial.print("Initializing MAX30100..");
+    // Initialize the PulseOximeter instance and register a beat-detected callback
+    // The parameter passed to the begin() method changes the samples flow that
+    // the library spews to the serial.
+    // Options:
+    //  * PULSEOXIMETER_DEBUGGINGMODE_PULSEDETECT : filtered samples and beat detection threshold
+    //  * PULSEOXIMETER_DEBUGGINGMODE_RAW_VALUES : sampled values coming from the sensor, with no processing
+    //  * PULSEOXIMETER_DEBUGGINGMODE_AC_VALUES : sampled values after the DC removal filter
 
-    if (!sensor.begin()) {
-        Serial.print("FAILED: ");
-
-        uint8_t partId = sensor.getPartId();
-        if (partId == 0xff) {
-            Serial.println("I2C error");
-        } else {
-            Serial.print("wrong part ID 0x");
-            Serial.print(partId, HEX);
-            Serial.print(" (expected: 0x");
-            Serial.println(EXPECTED_PART_ID, HEX);
-        }
-        // Stop here
-        for(;;);
-    } else {
-        Serial.println("Success");
+    // Initialize the PulseOximeter instance
+    // Failures are generally due to an improper I2C wiring, missing power supply
+    // or wrong target chip
+    if (!pox.begin()){
+         Serial.println("FAILED");
+         for(;;);
     }
-
-    Serial.print("Enabling HR/SPO2 mode..");
-    sensor.setMode(MAX30100_MODE_SPO2_HR);
-    Serial.println("done.");
-
-    Serial.print("Configuring LEDs biases to 50mA..");
-    sensor.setLedsCurrent(MAX30100_LED_CURR_50MA, MAX30100_LED_CURR_50MA);
-    Serial.println("done.");
-
-    delay(1000);
-
-    Serial.print("Lowering the current to 7.6mA..");
-    sensor.setLedsCurrent(MAX30100_LED_CURR_7_6MA, MAX30100_LED_CURR_7_6MA);
-    Serial.println("done.");
-
-    delay(1000);
-
-    Serial.print("Shutting down..");
-    sensor.shutdown();
-    Serial.println("done.");
-
-    delay(1000);
-
-    Serial.print("Resuming normal operation..");
-    sensor.resume();
-    delay(500);
-    Serial.println("done.");
-
-    uint32_t tsTempSampStart = millis();
-    Serial.print("Sampling die temperature..");
-    sensor.startTemperatureSampling();
-    while(!sensor.isTemperatureReady()) {
-        if (millis() - tsTempSampStart > 1000) {
-            Serial.println("ERROR: timeout");
-            // Stop here
-            for(;;);
-        }
+    else{
+         Serial.println("SUCCESS");
+         pox.setOnBeatDetectedCallback(onBeatDetected);
     }
-
-    float temperature = sensor.retrieveTemperature();
-    Serial.print("done, temp=");
-    Serial.print(temperature);
-    Serial.println("C");
-
-    if (temperature < 5) {
-        Serial.println("WARNING: Temperature probe reported an odd value");
-    } else {
-        Serial.println("All test pass.");
-    }
-
-    Serial.println();
-    Serial.println("Press any key to go into sampling loop mode");
-    while (!Serial.available());
-
-    sensor.resetFifo();
+ 
+    // The default current for the IR LED is 50mA and it could be changed by uncommenting the following line.
+    pox.setIRLedCurrent(MAX30100_LED_CURR_7_6MA);
 }
 
 void loop()
 {
-    uint16_t ir, red;
-
-    sensor.update();
-
-    while (sensor.getRawValues(&ir, &red)) {
-        Serial.print("IR=");
-        Serial.print(ir);
-        Serial.print(" RED=");
-        Serial.println(red);
+    pox.update();
+//    Blynk.run();
+ 
+    BPM = pox.getHeartRate();
+    SpO2 = pox.getSpO2();
+    if (millis() - tsLastReport > REPORTING_PERIOD_MS){
+        Serial.print("Heart rate:");
+        Serial.print(BPM);
+        Serial.print(" bpm / SpO2:");
+        Serial.print(SpO2);
+        Serial.println(" %");
+ 
+//        Blynk.virtualWrite(V3, BPM);
+//        Blynk.virtualWrite(V4, SpO2);
+        tsLastReport = millis();
     }
 }
