@@ -1,22 +1,16 @@
-String getMessage(){
-  String message = "";
-  char character;
-  while(Serial.available() > 0){
-    character = Serial.read();
-    message = message + character;
-    if(character == '\n'){
-      return message;
-    }
-  }
-}
+#include "imports.h"
+
+LiquidCrystal lcd(12, 11, 2, 3, 4, 5);
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
+  delay(10);
   displaySetup();
 }
 
 void loop() {
   String msg = getMessage();
+  
   displayFunctions(msg);
   buzzerFunctions(msg);
 }

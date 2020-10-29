@@ -1,4 +1,3 @@
-
 void wpsInitConfig() {
   config.crypto_funcs = &g_wifi_default_wps_crypto_funcs;
   config.wps_type = ESP_WPS_MODE;
@@ -55,4 +54,43 @@ void WiFiEvent(WiFiEvent_t event, system_event_info_t info) {
     default:
       break;
   }
+}
+
+void WiFi_setup(){
+  WiFi.begin();
+  Serial.print("Connessione all'ultimo AP");
+  unsigned long previousMillisWiFi = 0;
+  while (WiFi.status() != WL_CONNECTED) {
+    if (previousMillisWiFi < TIMEOUT_WIFI){
+      previousMillisWiFi = millis();
+      Serial.print(".");
+      delay(500);
+    }
+    else break;
+  }
+
+  if (WiFi.status() != WL_CONNECTED) {
+    WiFi.onEvent(WiFiEvent);
+    WiFi.mode(WIFI_MODE_STA);
+    Serial.println("Starting WPS");
+    wpsInitConfig();
+    esp_wifi_wps_enable(&config);
+    esp_wifi_wps_start(0);
+  }
+  else {
+    Serial.println();
+    Serial.print("Conectado a: ");
+    Serial.println(WiFi.SSID());
+    Serial.print("IP Address: ");
+    Serial.println(WiFi.localIP());
+    
+    Blynk_setup();
+  }
+}
+
+void Blynk_setup(){
+    Blynk.config(AUTH);
+    bool success = Blynk.connect();
+    if(success) Serial.println("Sucesso na conexão com o Blynk");
+    else Serial.println("Falha na conexão com o Blynk");
 }
