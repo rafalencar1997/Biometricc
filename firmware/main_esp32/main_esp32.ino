@@ -6,9 +6,12 @@ PulseOximeter pox;
 OneWire oneWire(GPIO_4);
 DallasTemperature sensors(&oneWire);
 
-int const thresholdO2 = 50;
+int const thresholdO2low = 50;
+int const thresholdO2high = 100;
 int const thresholdBPMlow = 60;
 int const thresholdBPMhigh = 190;
+int const thresholdTEMPhigh = 50;
+int const thresholdTEMPlow = 30;
 
 // Semáforos
 boolean TEMP_ON = false;
@@ -18,7 +21,8 @@ uint32_t timeLastMeasure = 0;
 // Configuração Inicial
 void setup() {
   Serial.begin(115200);
-  
+
+  pinMode(BUTTON, INPUT); 
   pinMode(LED_INSIDE, OUTPUT);            
   digitalWrite(LED_INSIDE, HIGH);
 
@@ -35,13 +39,14 @@ void setup() {
 
 // Loop do Código
 void loop() { 
-   Blynk.run();
-   pox.update();
-   if(OXIM_ON){
+  Blynk.run();
+  pox.update();
+  if(OXIM_ON){
     max30100();
-   }
-  //  Temperartura
-  //  float temp = float(ds18b20(),1);
-  //  Blynk.virtualWrite(V3, temp);
-
+  }
+  if(digitalRead(BUTTON) == LOW && 
+     !OXIM_ON && millis()-timeLastMeasure > TIME_BEFORE_MEASURE){
+     TEMP_ON = true;
+    ds18b20();
+  }
 }

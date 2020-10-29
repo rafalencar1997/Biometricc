@@ -18,27 +18,40 @@ void max30100_setup(){
 
 void max30100(){
   
-  double epsilon = 5;
-  double delta1 = epsilon;
-  double delta2 = epsilon;
+  float epsilon1 = 5;
+  float epsilon2 = 1;
+  float delta1 = epsilon1;
+  float delta2 = epsilon2;
   
-  double bpm[5];
+  float bpm[5];
+  float bpmMax = 0;
+  float bpmMin = 1000;
 
-  double spo2[5];
+  float spo2[5];
+  float spo2Max = 0;
+  float spo2Min = 1000;
 
   uint32_t firstReport = millis();
-  uint32_t lastReport = 0;
+  uint32_t lastReport = firstReport;
   do{
+    //  Tempo limite para fazer medição do oxímetro
+    if(lastReport-firstReport > MAX_REPORTING_PERIOD_MS){
+      Serial.println("buzzer-falha");
+      Serial.println("display-Falha na medição");
+      OXIM_ON = false;
+      timeLastMeasure = millis();
+      return;
+    } 
     int i = 0;
-    double bpmMax = 0;
-    double bpmMin = 1000;
-    double spo2Max = 0;
-    double spo2Min = 1000;
+    bpmMax = 0;
+    bpmMin = 1000;
+    spo2Max = 0;
+    spo2Min = 1000;
     while(i < 5){
       pox.update();
       if (millis()-lastReport > REPORTING_PERIOD_MS) {
-        bpm[i] = pox.getHeartRate();
-        spo2[i] = pox.getSpO2();
+        bpm[i] = round(pox.getHeartRate()*100)/100;
+        spo2[i] = round(pox.getSpO2()*100)/100;
         if(bpm[i] > bpmMax) bpmMax = bpm[i];
         if(bpm[i] < bpmMin) bpmMin = bpm[i];
         if(spo2[i] > spo2Max) spo2Max = spo2[i];
@@ -58,17 +71,11 @@ void max30100(){
     Serial.print("Delta1: ");
     Serial.println(delta1);
     Serial.print("Delta2: ");
-    Serial.println(delta2);
-    //  Tempo limite para fazer medição do oxímetro
-    if(lastReport-firstReport > MAX_REPORTING_PERIOD_MS){
-      Serial.println("buzzer-falha");
-      Serial.println("display-Falha na medição");
-      OXIM_ON = false;
-      timeLastMeasure = millis();
-      return;
-    }        
+    Serial.println(delta2);       
   }
-  while(delta1 > epsilon || delta2 > epsilon);
+  while(delta1 > epsilon1 || delta2 > epsilon2 || 
+        spo2Max > thresholdO2high  || spo2Min < thresholdO2low ||
+        bpmMax  > thresholdBPMhigh || bpmMin  < thresholdBPMlow);
   Serial.println("buzzer-sucesso");
   Serial.println("display-medição concluida");
   OXIM_ON = false;
