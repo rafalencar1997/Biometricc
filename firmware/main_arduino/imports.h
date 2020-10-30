@@ -1,5 +1,16 @@
 #include <LiquidCrystal.h>
+#include <SoftwareSerial.h>
 
+// Ports
+#define BUZZER 8
+#define RS 12
+#define EN 11
+#define D4 4
+#define D5 5
+#define D6 6
+#define D7 7
+#define RX 9
+#define TX 10
 
 // Buzzer Notes
 #define NOTE_B0  31

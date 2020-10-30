@@ -27,12 +27,10 @@
 #define BUZZ_1 "BUZZ-1"
 #define BUZZ_2 "BUZZ-2"
 #define BUZZ_3 "BUZZ-3"
-#define DISP_0 "DISP-0"
-#define DISP_1 "DISP-1"
-#define DISP_2 "DISP-2"
-#define DISP_3 "DISP-3:"
-#define DISP_4 "DISP-4:"
-#define DISP_5 "DISP-5:"
+#define DISP_0 "DISP-0:x"
+#define DISP_1 "DISP-1:"
+#define DISP_2 "DISP-2:"
+#define DISP_3 "DISP-3:x"
 
 // Portas
 #define GPIO_4 4

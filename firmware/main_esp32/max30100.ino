@@ -1,6 +1,6 @@
 // Callback (registered below) fired when a pulse is detected
 void onBeatDetected(){
-  Serial.println("Beat detected"); 
+//  Serial.println("Beat detected"); 
   if(!TEMP_ON && millis()-timeLastMeasure > TIME_BEFORE_MEASURE){
     OXIM_ON = true;
   }
@@ -36,8 +36,9 @@ void max30100(){
   do{
     //  Tempo limite para fazer medição do oxímetro
     if(lastReport-firstReport > MAX_REPORTING_PERIOD_MS){
-      Serial.println("buzzer-falha");
-      Serial.println("display-Falha na medição");
+      Serial1.println(DISP_5);
+      Serial.println(BUZZ_1);
+      Serial.println(DISP_0);
       OXIM_ON = false;
       timeLastMeasure = millis();
       return;
@@ -56,10 +57,7 @@ void max30100(){
         if(bpm[i] < bpmMin) bpmMin = bpm[i];
         if(spo2[i] > spo2Max) spo2Max = spo2[i];
         if(spo2[i] < spo2Min) spo2Min = spo2[i];
-        Serial.print("BPM: ");
-        Serial.println(bpm[i]);
-        Serial.print("SPO2: ");
-        Serial.println(spo2[i]);
+        Serial.println(DISP_4+(String)bpm[i]+"/"+(String)spo2[i]);
         Blynk.virtualWrite(V4, bpm[i]);
         Blynk.virtualWrite(V5, spo2[i]);
         lastReport = millis();
@@ -67,17 +65,13 @@ void max30100(){
       }
     }
     delta1 = abs(bpmMax-bpmMin);
-    delta2 = abs(spo2Max-spo2Min);
-    Serial.print("Delta1: ");
-    Serial.println(delta1);
-    Serial.print("Delta2: ");
-    Serial.println(delta2);       
+    delta2 = abs(spo2Max-spo2Min);       
   }
   while(delta1 > epsilon1 || delta2 > epsilon2 || 
         spo2Max > thresholdO2high  || spo2Min < thresholdO2low ||
         bpmMax  > thresholdBPMhigh || bpmMin  < thresholdBPMlow);
-  Serial.println("buzzer-sucesso");
-  Serial.println("display-medição concluida");
+  Serial.println(BUZZ_2);
+  Serial.println(DISP_0);
   OXIM_ON = false;
   timeLastMeasure = millis();
 }
