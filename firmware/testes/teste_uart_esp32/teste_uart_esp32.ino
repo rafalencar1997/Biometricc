@@ -2,7 +2,7 @@
 
 // Objetos de Globais
 static esp_wps_config_t config;
-//PulseOximeter pox;
+PulseOximeter pox;
 OneWire oneWire(GPIO_4);
 DallasTemperature sensors(&oneWire);
 
@@ -18,7 +18,6 @@ boolean TEMP_ON = false;
 boolean OXIM_ON = false;
 uint32_t timeLastMeasure = 0;
 
-
 void setup() {
   Serial.begin(115200);
 
@@ -30,10 +29,18 @@ void setup() {
   WiFi_setup();
   // Configuração dos sensor de temperatura
   ds18b20_setup();
+  // Configuração dos sensor oxímetro
+  max30100_setup();
 }
 
 void loop() {
   Blynk.run();
+  pox.update();
+  if(OXIM_ON){
+    digitalWrite(LED_INSIDE, HIGH);
+    max30100();
+    digitalWrite(LED_INSIDE, LOW);
+  }
   if(digitalRead(BUTTON) == LOW && 
      !OXIM_ON && millis()-timeLastMeasure > TIME_BEFORE_MEASURE){
      TEMP_ON = true;
