@@ -12,6 +12,7 @@ String getMessage(){
 
 void runFunction(String message){
   String disp = getSplit(message, '-', 0);
+  
   if(disp == "DISP") displayFunctions(getSplit(message, '-', 1));  
   else if(disp == "BUZZ") buzzerFunctions(getSplit(message, '-', 1));  
 }

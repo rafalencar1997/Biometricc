@@ -18,9 +18,8 @@ boolean TEMP_ON = false;
 boolean OXIM_ON = false;
 uint32_t timeLastMeasure = 0;
 
-// Configuração Inicial
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   pinMode(BUTTON, INPUT); 
   pinMode(LED_INSIDE, OUTPUT);            
@@ -32,13 +31,9 @@ void setup() {
   ds18b20_setup();
   // Configuração dos sensor oxímetro
   max30100_setup();
-
-  // Mensagem serial para o display  
-  Serial.println(DISP_0);
 }
 
-// Loop do Código
-void loop() { 
+void loop() {
   Blynk.run();
   pox.update();
   if(OXIM_ON){

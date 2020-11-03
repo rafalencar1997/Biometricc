@@ -20,8 +20,8 @@ void max30100(){
   
   float epsilon1 = 5;
   float epsilon2 = 1;
-  float delta1 = epsilon1;
-  float delta2 = epsilon2;
+  float delta1 = epsilon1+1;
+  float delta2 = epsilon2+1;
   
   float bpm[5];
   float bpmMax = 0;
@@ -33,11 +33,16 @@ void max30100(){
 
   uint32_t firstReport = millis();
   uint32_t lastReport = firstReport;
-  do{
+  while(delta1 > epsilon1 || delta2 > epsilon2 || 
+        spo2Max > thresholdO2high  || spo2Min < thresholdO2low ||
+        bpmMax  > thresholdBPMhigh || bpmMin  < thresholdBPMlow){
     //  Tempo limite para fazer medição do oxímetro
     if(lastReport-firstReport > MAX_REPORTING_PERIOD_MS){
-      Serial1.println(DISP_5);
+      delay(1000);
+      Serial.println(DISP_3);
+      delay(500);
       Serial.println(BUZZ_1);
+      delay(5000);
       Serial.println(DISP_0);
       OXIM_ON = false;
       timeLastMeasure = millis();
@@ -57,7 +62,7 @@ void max30100(){
         if(bpm[i] < bpmMin) bpmMin = bpm[i];
         if(spo2[i] > spo2Max) spo2Max = spo2[i];
         if(spo2[i] < spo2Min) spo2Min = spo2[i];
-        Serial.println(DISP_4+(String)bpm[i]+"/"+(String)spo2[i]);
+        Serial.println(DISP_2+(String)bpm[i]+"/"+(String)spo2[i]);
         Blynk.virtualWrite(V4, bpm[i]);
         Blynk.virtualWrite(V5, spo2[i]);
         lastReport = millis();
@@ -67,11 +72,9 @@ void max30100(){
     delta1 = abs(bpmMax-bpmMin);
     delta2 = abs(spo2Max-spo2Min);       
   }
-  while(delta1 > epsilon1 || delta2 > epsilon2 || 
-        spo2Max > thresholdO2high  || spo2Min < thresholdO2low ||
-        bpmMax  > thresholdBPMhigh || bpmMin  < thresholdBPMlow);
-  Serial.println(BUZZ_2);
-  Serial.println(DISP_0);
   OXIM_ON = false;
   timeLastMeasure = millis();
+  Serial.println(BUZZ_2);
+  delay(5000);
+  Serial.println(DISP_0); 
 }

@@ -16,8 +16,11 @@ void ds18b20(){
   while(delta > epsilon || tempMax > thresholdTEMPhigh || tempMin < thresholdTEMPlow){
     //  Tempo limite para fazer medição do temperatura
     if(lastReport-firstReport > MAX_REPORTING_PERIOD_MS){
-      Serial.println(DISP_5);
+      delay(1000);
+      Serial.println(DISP_3);
+      delay(500);
       Serial.println(BUZZ_1);
+      delay(5000);
       Serial.println(DISP_0);
       TEMP_ON = false;
       timeLastMeasure = millis();
@@ -32,7 +35,7 @@ void ds18b20(){
         temp[i]= round(sensors.getTempCByIndex(0)*100)/100;
         if(temp[i] > tempMax) tempMax = temp[i];
         if(temp[i] < tempMin) tempMin = temp[i];
-        Serial.println(DISP_3+(String)temp[i]);
+        Serial.println(DISP_1+(String)temp[i]);
         Blynk.virtualWrite(V3, temp[i]);
         lastReport = millis();
         i++;
@@ -40,9 +43,9 @@ void ds18b20(){
     }
     delta = abs(tempMax-tempMin);  
   }
-  
   TEMP_ON = false;
   timeLastMeasure = millis();
   Serial.println(BUZZ_2);
+  delay(5000);
   Serial.println(DISP_0);
 }
