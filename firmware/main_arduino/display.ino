@@ -19,6 +19,7 @@ void displayFunctions(String msg) {
       String values = getSplit(msg, ':', 1);
       String bpm = getSplit(values, '/', 0);
       String spo2 = getSplit(values, '/', 1);
+      spo2.remove(spo2.length()-1);
       spo2.remove(spo2.length()-1);    
       lcd.clear();
       lcd.setCursor(0, 0);

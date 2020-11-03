@@ -34,7 +34,7 @@ void setup() {
 
   Serial.println(DISP_0);
 //  Serial.println(BUZZ_3);
-//  delay(60000);
+//  delay(30000);
   digitalWrite(LED_INSIDE, LOW);
 }
 
