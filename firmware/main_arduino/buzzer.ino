@@ -34,6 +34,32 @@ int melody[] = {
   NOTE_G4,0, NOTE_G4, NOTE_AS5,
   NOTE_A5, NOTE_AS5, NOTE_A5, NOTE_AS5
  };
+ int melody2[] = {
+  NOTE_AS3, NOTE_AS3, NOTE_AS3, NOTE_AS3,
+  NOTE_D4, NOTE_D4, NOTE_D4, NOTE_D4, 
+  NOTE_C4, NOTE_C4, NOTE_C4, NOTE_C4, 
+  NOTE_F4, NOTE_F4, NOTE_F4, NOTE_F4,
+  NOTE_G4, NOTE_G4, NOTE_G4, NOTE_G4,
+  NOTE_G4, NOTE_G4, NOTE_G4, NOTE_G4,
+  NOTE_G4, 0, 0, 0,
+  NOTE_C4, NOTE_AS3, NOTE_A3, NOTE_F3,
+  NOTE_G3, 0, NOTE_G3,
+  NOTE_D4, NOTE_C4, NOTE_AS3, NOTE_A3,
+  0, NOTE_A3, NOTE_A3, NOTE_C4, NOTE_AS3, NOTE_A3
+  NOTE_G3, 0, NOTE_G3,
+  NOTE_AS4, NOTE_A4, NOTE_AS4, NOTE_A4, NOTE_AS4,
+  NOTE_G3, 0, NOTE_G3, 
+  NOTE_AS4, NOTE_A4, NOTE_AS4, NOTE_A4, NOTE_AS4,
+  NOTE_G3, 0, NOTE_G3, 
+  NOTE_D4, NOTE_C4, NOTE_AS3, NOTE_A3,
+  0, NOTE_A3, NOTE_A3, NOTE_C4, NOTE_AS3, NOTE_A3
+  NOTE_G3, 0, NOTE_G3,
+  NOTE_AS4, NOTE_A4, NOTE_AS4, NOTE_A4, NOTE_AS4,
+  NOTE_G3, 0, NOTE_G3, 
+  NOTE_AS4, NOTE_A4, NOTE_AS4, NOTE_A4, NOTE_AS4,
+  NOTE_G3, 0, NOTE_G3, 
+
+ };
 
 void buzzerFunctions(String msg){
   int code = msg.toInt();
@@ -60,9 +86,9 @@ void buzzerFunctions(String msg){
       }
       break; 
     case 3:
-      for (int thisNote = 0; thisNote < 112; thisNote++) {
+      for (int thisNote = 0; thisNote < 91; thisNote++) {
         int noteDuration = 188;
-        tone(BUZZER, melody[thisNote], noteDuration);
+        tone(BUZZER, melody2[thisNote], noteDuration);
         int pauseBetweenNotes = noteDuration * 1.30;
         delay(pauseBetweenNotes);
         noTone(BUZZER);
