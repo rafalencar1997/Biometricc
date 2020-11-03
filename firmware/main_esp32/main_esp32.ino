@@ -31,6 +31,11 @@ void setup() {
   ds18b20_setup();
   // Configuração dos sensor oxímetro
   max30100_setup();
+
+  Serial.println(DISP_0);
+//  Serial.println(BUZZ_3);
+//  delay(60000);
+  digitalWrite(LED_INSIDE, LOW);
 }
 
 void loop() {
@@ -39,11 +44,12 @@ void loop() {
   if(OXIM_ON){
     digitalWrite(LED_INSIDE, HIGH);
     max30100();
+    max30100_setup();
     digitalWrite(LED_INSIDE, LOW);
   }
   if(digitalRead(BUTTON) == LOW && 
      !OXIM_ON && millis()-timeLastMeasure > TIME_BEFORE_MEASURE){
-     TEMP_ON = true;
+    TEMP_ON = true;
     digitalWrite(LED_INSIDE, HIGH);
     ds18b20();
     digitalWrite(LED_INSIDE, LOW);

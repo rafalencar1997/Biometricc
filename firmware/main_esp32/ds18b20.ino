@@ -16,9 +16,7 @@ void ds18b20(){
   while(delta > epsilon || tempMax > thresholdTEMPhigh || tempMin < thresholdTEMPlow){
     //  Tempo limite para fazer medição do temperatura
     if(lastReport-firstReport > MAX_REPORTING_PERIOD_MS){
-      delay(1000);
       Serial.println(DISP_3);
-      delay(500);
       Serial.println(BUZZ_1);
       delay(5000);
       Serial.println(DISP_0);
@@ -43,9 +41,9 @@ void ds18b20(){
     }
     delta = abs(tempMax-tempMin);  
   }
-  TEMP_ON = false;
-  timeLastMeasure = millis();
   Serial.println(BUZZ_2);
   delay(5000);
   Serial.println(DISP_0);
+  TEMP_ON = false;
+  timeLastMeasure = millis();
 }

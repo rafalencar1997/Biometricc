@@ -1,6 +1,6 @@
 // Callback (registered below) fired when a pulse is detected
 void onBeatDetected(){
-//  Serial.println("Beat detected"); 
+  Serial.println("Beat detected"); 
   if(!TEMP_ON && millis()-timeLastMeasure > TIME_BEFORE_MEASURE){
     OXIM_ON = true;
   }
@@ -38,9 +38,7 @@ void max30100(){
         bpmMax  > thresholdBPMhigh || bpmMin  < thresholdBPMlow){
     //  Tempo limite para fazer medição do oxímetro
     if(lastReport-firstReport > MAX_REPORTING_PERIOD_MS){
-      delay(1000);
       Serial.println(DISP_3);
-      delay(500);
       Serial.println(BUZZ_1);
       delay(5000);
       Serial.println(DISP_0);
@@ -72,9 +70,9 @@ void max30100(){
     delta1 = abs(bpmMax-bpmMin);
     delta2 = abs(spo2Max-spo2Min);       
   }
-  OXIM_ON = false;
-  timeLastMeasure = millis();
   Serial.println(BUZZ_2);
   delay(5000);
-  Serial.println(DISP_0); 
+  Serial.println(DISP_0);
+  OXIM_ON = false;
+  timeLastMeasure = millis(); 
 }
